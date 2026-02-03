@@ -3,373 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Rishabh Shrestha - Android Developer, Flutter Developer, Mobile Application Developer, Java Spring Boot Developer">
-    <title>Rishabh Shrestha | Mobile Application Developer</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="Rishabh Shrestha — Android Developer, Flutter Developer, Java Spring Boot Backend. Mobile & backend engineer. Clean Architecture, MVVM, production systems.">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>Rishabh Shrestha | Android · Flutter · Spring Boot Developer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="container">
-            <div class="nav-brand">RS</div>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#experience" class="nav-link">Experience</a></li>
-                <li><a href="#projects" class="nav-link">Projects</a></li>
-                <li><a href="#skills" class="nav-link">Skills</a></li>
-                <li><a href="#education" class="nav-link">Education</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true">
+        <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+    </div>
+
+    <div class="command-palette" id="commandPalette" role="dialog" aria-label="Jump to section" aria-hidden="true">
+        <div class="command-palette-backdrop" id="commandPaletteBackdrop"></div>
+        <div class="command-palette-box glass">
+            <div class="command-palette-header">Jump to section</div>
+            <ul class="command-palette-list" id="commandPaletteList"></ul>
+            <div class="command-palette-hint">Arrow keys to select, Enter to go, Esc to close</div>
+        </div>
+    </div>
+    <button type="button" class="shortcut-hint" id="shortcutHint" aria-label="Show shortcuts (?)">?</button>
+
+    <div class="terminal-toast glass" id="terminalToast" role="status" aria-live="polite" aria-hidden="true">
+        <span class="terminal-toast-text" id="terminalToastText"></span>
+    </div>
+
+    <!-- Code-driven navigation (no traditional menu) -->
+    <nav class="nav-code" id="navCode" role="navigation" aria-label="Main navigation">
+        <div class="nav-code-inner">
+            <a href="#hero" class="nav-code-brand" aria-label="Home">RS</a>
+            <ul class="nav-code-menu" id="navCodeMenu">
+                <li><a href="#hero" class="nav-code-link"><span class="nav-prompt">></span> whoami</a></li>
+                <li><a href="#about" class="nav-code-link"><span class="nav-prompt">></span> about</a></li>
+                <li><a href="#skills" class="nav-code-link"><span class="nav-prompt">></span> skills</a></li>
+                <li><a href="#projects" class="nav-code-link"><span class="nav-prompt">></span> projects</a></li>
+                <li><a href="#architecture" class="nav-code-link"><span class="nav-prompt">></span> architecture</a></li>
+                <li><a href="#contact" class="nav-code-link"><span class="nav-prompt">></span> contact</a></li>
             </ul>
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
+            <button class="nav-code-toggle" id="navCodeToggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
             </button>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-image">
-                    <img src="public/assets/images/profileImage" alt="Rishabh Shrestha" class="profile-img" onerror="this.src='https://via.placeholder.com/300?text=RS'">
+    <!-- Hero: Living section with profile image + terminal -->
+    <section id="hero" class="hero" aria-label="Hero">
+        <canvas id="heroCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-profile-wrap" id="heroProfileWrap">
+                <img src="./public/assets/images/profileImage.jpg" alt="Rishabh Shrestha" class="hero-profile-img" id="heroProfileImg" onerror="this.style.display='none'; this.nextElementSibling?.classList.add('show');">
+                <div class="hero-profile-fallback" aria-hidden="true">RS</div>
+            </div>
+            <p class="hero-hint" id="heroRecruiterHint">Most recruiters start here</p>
+            <div class="hero-terminal" id="heroTerminal">
+                <div class="hero-line">
+                    <span class="hero-prompt">$</span> <span class="hero-typed" id="heroCommand1"></span><span class="hero-cursor" id="heroCursor" aria-hidden="true"></span>
                 </div>
-                <h1 class="hero-name">Rishabh Shrestha</h1>
-                <div class="hero-titles">
-                    <span class="title-item">Android Developer</span>
-                    <span class="title-item">Flutter Developer</span>
-                    <span class="title-item">Mobile Application Developer</span>
-                    <span class="title-item">Java Spring Boot Developer</span>
+                <div class="hero-line hero-output" id="heroOutput1"></div>
+                <div class="hero-line">
+                    <span class="hero-prompt">$</span> <span class="hero-typed" id="heroCommand2"></span><span class="hero-cursor hero-cursor-blink" id="heroCursor2" aria-hidden="true"></span>
                 </div>
-                <p class="hero-tagline">Building scalable, high-performance mobile applications and robust backend systems</p>
-                <div class="hero-buttons">
-                    <a href="#projects" class="btn btn-primary">View Projects</a>
-                    <a href="#contact" class="btn btn-secondary">Contact Me</a>
-                </div>
+                <div class="hero-line hero-output" id="heroOutput2"></div>
+            </div>
+            <p class="hero-tagline">Android · Flutter · Java Spring Boot. I build production mobile apps and scalable backends. Clean Architecture, MVVM, REST. Based in Lalitpur, Nepal.</p>
+            <div class="hero-cta">
+                <a href="#projects" class="btn btn-primary">View Projects</a>
+                <a href="#contact" class="btn btn-ghost">Hire Me</a>
             </div>
         </div>
-        <div class="scroll-indicator">
-            <span>Scroll Down</span>
-            <div class="scroll-arrow"></div>
+        <div class="scroll-indicator" aria-hidden="true">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="about section">
-        <div class="container">
-            <h2 class="section-title">About Me</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>
-                        I am a passionate Mobile Application Developer with over 4 years of experience specializing in Android and Flutter development. 
-                        My expertise spans across native Android development using Kotlin, Java, and Jetpack Compose, as well as cross-platform 
-                        development with Flutter and Dart.
-                    </p>
-                    <p>
-                        I have a strong foundation in building real-time applications using Firebase, integrating REST APIs, and developing 
-                        robust backend systems with Java Spring Boot. My focus is on creating scalable, maintainable, and production-ready 
-                        solutions that deliver exceptional user experiences.
-                    </p>
-                    <p>
-                        Throughout my career, I've worked with various companies, contributing to the development of high-quality mobile 
-                        applications that serve thousands of users. I follow clean architecture principles and modern development practices 
-                        to ensure code quality and maintainability.
-                    </p>
-                </div>
-                <div class="about-info">
-                    <div class="info-item">
-                        <span class="info-label">Location</span>
-                        <span class="info-value">Lalitpur, Nepal</span>
+    <main>
+        <section id="about" class="section section-about">
+            <div class="container">
+                <h2 class="section-title">About</h2>
+                <div class="about-grid">
+                    <div class="about-visual">
+                        <div class="about-card glass code-block">
+                            <div class="about-metrics">
+                                <div class="metric"><span class="metric-value" data-count="4">0</span><span class="metric-label">years</span></div>
+                                <div class="metric"><span class="metric-value">10+</span><span class="metric-label">projects</span></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Phone</span>
-                        <span class="info-value">
-                            <a href="tel:+9779800000000">+977 9800000000</a>
-                        </span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Email</span>
-                        <span class="info-value">
-                            <a href="mailto:rishabh.shrestha@example.com">rishabh.shrestha@example.com</a>
-                        </span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">LinkedIn</span>
-                        <span class="info-value">
-                            <a href="https://linkedin.com/in/rishabh-shrestha" target="_blank" rel="noopener noreferrer">linkedin.com/in/rishabh-shrestha</a>
-                        </span>
+                    <div class="about-text">
+                        <p class="about-lead">Mobile application developer and backend engineer. Problem-solver mindset, product thinking, scalable architecture focus.</p>
+                        <p>I build and maintain mobile apps with Kotlin, Jetpack Compose, Flutter, and Java Spring Boot. MVVM, Clean Architecture, REST APIs, Firebase. Apps used by thousands of users. Based in Lalitpur.</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Experience Section -->
-    <section id="experience" class="experience section">
-        <div class="container">
-            <h2 class="section-title">Experience</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <h3 class="timeline-title">Mid Android Developer</h3>
-                        <h4 class="timeline-company">App Technologies Pvt. Ltd.</h4>
-                        <span class="timeline-date">Nov 2023 – Present</span>
-                        <p class="timeline-description">Developing and maintaining Android applications using Kotlin, Jetpack Compose, and modern Android architecture components.</p>
+        <section id="skills" class="section section-skills">
+            <div class="container">
+                <h2 class="section-title">Skills & Tech Stack</h2>
+                <div class="skills-grid">
+                    <div class="skill-card glass code-block" tabindex="0" data-skill="android">
+                        <div class="skill-icon"><span class="skill-icon-text">Android</span></div>
+                        <h3>Android</h3>
+                        <p>Kotlin, Java, Jetpack Compose, MVVM, Room, Navigation Component, Coroutines, StateFlow</p>
                     </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <h3 class="timeline-title">Mid Android Developer</h3>
-                        <h4 class="timeline-company">Pathway Technology Pvt. Ltd.</h4>
-                        <span class="timeline-date">Jun 2022 – Sep 2023</span>
-                        <p class="timeline-description">Worked on multiple Android projects, implementing MVVM architecture, Room database, and REST API integrations.</p>
+                    <div class="skill-card glass code-block" tabindex="0" data-skill="flutter">
+                        <div class="skill-icon"><span class="skill-icon-text">Flutter</span></div>
+                        <h3>Flutter</h3>
+                        <p>Dart, cross-platform UI, Provider, Firebase integration, production apps</p>
                     </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <h3 class="timeline-title">Junior Android Developer</h3>
-                        <h4 class="timeline-company">Lucky Production Pvt. Ltd.</h4>
-                        <span class="timeline-date">Sep 2021 – Jun 2022</span>
-                        <p class="timeline-description">Developed Android applications from scratch, collaborated with cross-functional teams, and learned industry best practices.</p>
+                    <div class="skill-card glass code-block" tabindex="0" data-skill="backend">
+                        <div class="skill-icon"><span class="skill-icon-text">Backend</span></div>
+                        <h3>Java Spring Boot</h3>
+                        <p>REST APIs, Retrofit, Firebase (Auth, Firestore, FCM), MySQL</p>
                     </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <h3 class="timeline-title">Android Intern</h3>
-                        <h4 class="timeline-company">ApplyJob.com</h4>
-                        <span class="timeline-date">Dec 2020 – Jul 2021</span>
-                        <p class="timeline-description">Started my journey in Android development, learned fundamentals, and contributed to real-world projects.</p>
+                    <div class="skill-card glass code-block" tabindex="0" data-skill="practices">
+                        <div class="skill-icon"><span class="skill-icon-text">Practices</span></div>
+                        <h3>Architecture & Practices</h3>
+                        <p>Clean Architecture, MVVM, Dependency Injection, Git, testing</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="projects section">
-        <div class="container">
-            <h2 class="section-title">Projects</h2>
-            <div class="projects-grid">
-                <!-- Featured Project -->
-                <div class="project-card featured">
-                    <div class="project-badge">Featured</div>
-                    <h3 class="project-title">Sajilo Ride Sharing</h3>
-                    <p class="project-description">
-                        A comprehensive ride-sharing application connecting drivers and passengers. Features real-time tracking, 
-                        secure payment integration, and seamless user experience.
-                    </p>
-                    <ul class="project-features">
-                        <li>Real-time location tracking</li>
-                        <li>Secure payment gateway</li>
-                        <li>Driver and passenger matching</li>
-                        <li>Rating and review system</li>
-                        <li>Push notifications</li>
-                    </ul>
-                    <div class="project-tech">
-                        <span class="tech-badge">Android</span>
-                        <span class="tech-badge">Kotlin</span>
-                        <span class="tech-badge">Firebase</span>
-                        <span class="tech-badge">MVVM</span>
-                        <span class="tech-badge">Google Maps API</span>
-                    </div>
-                    <a href="https://play.google.com/store/apps/details?id=com.sajilo.ride" target="_blank" rel="noopener noreferrer" class="project-link">
-                        View on Play Store →
-                    </a>
-                </div>
-
-                <div class="project-card">
-                    <h3 class="project-title">GeoKrishi Farm</h3>
-                    <p class="project-description">
-                        An agricultural management app helping farmers track crops, manage resources, and access market information.
-                    </p>
-                    <ul class="project-features">
-                        <li>Crop management system</li>
-                        <li>Weather integration</li>
-                        <li>Market price tracking</li>
-                        <li>Resource planning</li>
-                    </ul>
-                    <div class="project-tech">
-                        <span class="tech-badge">Android</span>
-                        <span class="tech-badge">Java</span>
-                        <span class="tech-badge">REST API</span>
-                        <span class="tech-badge">SQLite</span>
-                    </div>
-                    <a href="https://play.google.com/store/apps/details?id=com.geokrishi.farm" target="_blank" rel="noopener noreferrer" class="project-link">
-                        View on Play Store →
-                    </a>
-                </div>
-
-                <div class="project-card">
-                    <h3 class="project-title">NAFHA</h3>
-                    <p class="project-description">
-                        A healthcare application providing medical services, appointment booking, and health records management.
-                    </p>
-                    <ul class="project-features">
-                        <li>Appointment scheduling</li>
-                        <li>Health records management</li>
-                        <li>Doctor consultation</li>
-                        <li>Prescription management</li>
-                    </ul>
-                    <div class="project-tech">
-                        <span class="tech-badge">Flutter</span>
-                        <span class="tech-badge">Dart</span>
-                        <span class="tech-badge">Firebase</span>
-                        <span class="tech-badge">Provider</span>
-                    </div>
-                    <a href="https://play.google.com/store/apps/details?id=com.nafha.app" target="_blank" rel="noopener noreferrer" class="project-link">
-                        View on Play Store →
-                    </a>
-                </div>
-
-                <div class="project-card">
-                    <h3 class="project-title">Driverzz</h3>
-                    <p class="project-description">
-                        A driver management application for transportation companies to manage drivers, vehicles, and routes efficiently.
-                    </p>
-                    <ul class="project-features">
-                        <li>Driver profile management</li>
-                        <li>Route optimization</li>
-                        <li>Vehicle tracking</li>
-                        <li>Performance analytics</li>
-                    </ul>
-                    <div class="project-tech">
-                        <span class="tech-badge">Android</span>
-                        <span class="tech-badge">Kotlin</span>
-                        <span class="tech-badge">Spring Boot</span>
-                        <span class="tech-badge">Retrofit</span>
-                    </div>
-                    <a href="https://play.google.com/store/apps/details?id=com.driverzz.app" target="_blank" rel="noopener noreferrer" class="project-link">
-                        View on Play Store →
-                    </a>
+        <section id="projects" class="section section-projects">
+            <div class="container">
+                <h2 class="section-title">Projects</h2>
+                <p class="section-subtitle">Production systems, not demos.</p>
+                <div class="projects-grid">
+                    <article class="project-card glass code-block featured">
+                        <span class="project-badge">Featured</span>
+                        <h3>Sajilo — Nepali Ride Sharing App</h3>
+                        <p>Ride-sharing app for Nepal: book a ride, track your rider or driver in real time on the map, and pay securely. Connects passengers with nearby drivers for quick, safe trips.</p>
+                        <ul class="project-features">
+                            <li>Book a ride — pick-up and drop-off, choose vehicle type</li>
+                            <li>Real-time tracking — live rider/driver location on map</li>
+                            <li>Driver–passenger matching and ETA</li>
+                            <li>Payment gateway integration</li>
+                            <li>Ratings, reviews & push notifications</li>
+                        </ul>
+                        <div class="project-tech">
+                            <span>Android</span><span>Kotlin</span><span>Firebase</span><span>Google Maps</span>
+                        </div>
+                        <a href="https://play.google.com/store/apps/details?id=com.sajilo.ride" target="_blank" rel="noopener noreferrer" class="project-link">Play Store →</a>
+                    </article>
+                    <article class="project-card glass code-block">
+                        <h3>GeoKrishi Farm</h3>
+                        <p>Agricultural management app for farmers: track crops and harvests, check weather, view market prices, and plan resources. Helps manage land and improve yield.</p>
+                        <ul class="project-features">
+                            <li>Crop and harvest tracking</li>
+                            <li>Weather integration</li>
+                            <li>Market price information</li>
+                            <li>Resource and input planning</li>
+                        </ul>
+                        <div class="project-tech"><span>Android</span><span>Java</span><span>REST</span></div>
+                        <a href="https://play.google.com/store/apps/details?id=com.geokrishi.farm" target="_blank" rel="noopener noreferrer" class="project-link">View →</a>
+                    </article>
+                    <article class="project-card glass code-block">
+                        <h3>NAFHA</h3>
+                        <p>Healthcare app: book doctor appointments, store and view health records, manage prescriptions, and access consultation history in one place.</p>
+                        <ul class="project-features">
+                            <li>Appointment booking</li>
+                            <li>Health records management</li>
+                            <li>Prescription storage & history</li>
+                            <li>Doctor consultation flow</li>
+                        </ul>
+                        <div class="project-tech"><span>Flutter</span><span>Firebase</span></div>
+                        <a href="https://play.google.com/store/apps/details?id=com.nafha.app" target="_blank" rel="noopener noreferrer" class="project-link">View →</a>
+                    </article>
+                    <article class="project-card glass code-block">
+                        <h3>Driverzz</h3>
+                        <p>Driver and fleet management for transport companies: manage driver profiles, assign routes, track vehicles in real time, and view performance analytics.</p>
+                        <ul class="project-features">
+                            <li>Driver profile & documents</li>
+                            <li>Route assignment & optimization</li>
+                            <li>Real-time vehicle tracking</li>
+                            <li>Trips & performance analytics</li>
+                        </ul>
+                        <div class="project-tech"><span>Kotlin</span><span>Spring Boot</span></div>
+                        <a href="https://play.google.com/store/apps/details?id=com.driverzz.app" target="_blank" rel="noopener noreferrer" class="project-link">View →</a>
+                    </article>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="skills section">
-        <div class="container">
-            <h2 class="section-title">Skills</h2>
-            <div class="skills-container">
-                <div class="skill-category">
-                    <h3 class="category-title">Mobile Development</h3>
-                    <div class="skill-badges">
-                        <span class="skill-badge">Kotlin</span>
-                        <span class="skill-badge">Java</span>
-                        <span class="skill-badge">Jetpack Compose</span>
-                        <span class="skill-badge">Android MVVM</span>
-                        <span class="skill-badge">ROOM Database</span>
-                        <span class="skill-badge">Navigation Component</span>
-                        <span class="skill-badge">Flutter</span>
-                        <span class="skill-badge">Dart</span>
+        <section id="architecture" class="section section-architecture">
+            <div class="container">
+                <h2 class="section-title">Engineering Philosophy</h2>
+                <p class="section-subtitle">How I approach scalability, structure, and production.</p>
+                <div class="architecture-grid">
+                    <div class="arch-card glass code-block">
+                        <h3>Scalability</h3>
+                        <p>Design for growth: modular layers, clear boundaries, testable code. Mobile → API → DB with clear contracts.</p>
                     </div>
-                </div>
-                <div class="skill-category">
-                    <h3 class="category-title">Backend & Integration</h3>
-                    <div class="skill-badges">
-                        <span class="skill-badge">Java Spring Boot</span>
-                        <span class="skill-badge">REST APIs</span>
-                        <span class="skill-badge">Retrofit</span>
-                        <span class="skill-badge">Firebase Firestore</span>
-                        <span class="skill-badge">Firebase Authentication</span>
-                        <span class="skill-badge">Firebase Cloud Messaging</span>
+                    <div class="arch-card glass code-block">
+                        <h3>Debugging & Production</h3>
+                        <p>Structured logging, crash reporting, metrics. Reproduce, isolate, fix. No guesswork in production.</p>
                     </div>
-                </div>
-                <div class="skill-category">
-                    <h3 class="category-title">Tools & Practices</h3>
-                    <div class="skill-badges">
-                        <span class="skill-badge">Git</span>
-                        <span class="skill-badge">Android Studio</span>
-                        <span class="skill-badge">Clean Architecture</span>
-                        <span class="skill-badge">StateFlow</span>
-                        <span class="skill-badge">LiveData</span>
-                        <span class="skill-badge">Coroutines</span>
-                        <span class="skill-badge">Dependency Injection</span>
+                    <div class="arch-card glass code-block">
+                        <h3>Codebase Structure</h3>
+                        <p>Clean Architecture: domain, data, presentation. MVVM on UI. Dependency injection for testability and clarity.</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Education Section -->
-    <section id="education" class="education section">
-        <div class="container">
-            <h2 class="section-title">Education</h2>
-            <div class="education-grid">
-                <div class="education-card">
-                    <h3 class="education-degree">Bachelor in Information Technology</h3>
-                    <h4 class="education-institution">Herald College</h4>
-                    <p class="education-description">Comprehensive study of software engineering, database systems, and modern development practices.</p>
-                </div>
-                <div class="education-card">
-                    <h3 class="education-degree">Higher Secondary Education</h3>
-                    <h4 class="education-institution">Caribbean H.S.S</h4>
-                    <p class="education-description">Completed higher secondary education with focus on science and technology.</p>
-                </div>
-                <div class="education-card">
-                    <h3 class="education-degree">SLC</h3>
-                    <h4 class="education-institution">New English Secondary Boarding School</h4>
-                    <p class="education-description">School Leaving Certificate with excellent academic performance.</p>
+        <section id="experience" class="section section-experience">
+            <div class="container">
+                <h2 class="section-title">My Coding Journey</h2>
+                <div class="experience-journey glass code-block">
+                    <p class="journey-p">Covid gave me something unexpected: time. I’d always been curious about building things on a screen. So I started. At first it was messy — a lot of googling, a lot of “why does this crash?” But I fixed my first real bug in a real app, and something clicked.</p>
+                    <p class="journey-p">I soon realised that writing code alone isn’t enough. You have to understand the framework you’re using and the architecture behind the code — how layers fit together, where logic lives, and why it’s structured that way. That mindset changed how I built everything after.</p>
+                    <p class="journey-p">I built apps from scratch, learned to structure code so it didn’t turn into a knot, and learned to work with others — not just my own files, but a shared codebase and a team. Shipping on time and writing code others could read became the goal.</p>
+                    <p class="journey-p">Over the years I touched more and more: multiple apps, talking to servers, storing data, working closely with design and backend. Code reviews and “how do we keep this maintainable?” became part of the day. I stopped only fixing; I started owning.</p>
+                    <p class="journey-p">Today I still start with a problem, then design and build. I care about structure, clarity, and shipping. The stack evolves, but the aim doesn’t: build something that works, lasts, and feels right. Still learning. Still shipping.</p>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Languages Section -->
-    <section id="languages" class="languages section">
-        <div class="container">
-            <h2 class="section-title">Languages</h2>
-            <div class="languages-list">
-                <div class="language-item">
-                    <span class="language-name">Nepali</span>
-                    <span class="language-level">Native</span>
-                </div>
-                <div class="language-item">
-                    <span class="language-name">English</span>
-                    <span class="language-level">Professional</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- References Section -->
-    <section id="references" class="references section">
-        <div class="container">
-            <h2 class="section-title">References</h2>
-            <div class="reference-card">
-                <h3 class="reference-name">Roshan Posakya</h3>
-                <h4 class="reference-position">CTO, Sajilo Saathi Pvt. Ltd.</h4>
-                <div class="reference-contact">
-                    <a href="tel:+9779800000000" class="reference-link">Phone: +977 9800000000</a>
-                    <a href="mailto:roshan.posakya@example.com" class="reference-link">Email: roshan.posakya@example.com</a>
+        <section id="education" class="section section-education">
+            <div class="container">
+                <h2 class="section-title">Education</h2>
+                <div class="certs-grid">
+                    <div class="cert-card glass code-block">
+                        <h3>Bachelor in Information Technology</h3>
+                        <p class="cert-institution">Herald College</p>
+                        <p class="cert-detail">Software engineering, databases, networking, and modern development practices. Project work in mobile and web.</p>
+                    </div>
+                    <div class="cert-card glass code-block">
+                        <h3>Higher Secondary Education</h3>
+                        <p class="cert-institution">Caribbean H.S.S</p>
+                        <p class="cert-detail">Science stream. Foundation in mathematics and science for further studies in IT.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
+        <section id="testimonials" class="section section-testimonials">
+            <div class="container">
+                <h2 class="section-title">Testimonials</h2>
+                <blockquote class="testimonial-card glass code-block">
+                    <p>"Rishabh delivers clean, maintainable code and understands both the technical and product sides. A strong addition to any team."</p>
+                    <footer><cite>— Roshan Posakya, CTO, Sajilo Saathi Pvt. Ltd.</cite></footer>
+                </blockquote>
+            </div>
+        </section>
+
+        <section id="contact" class="section section-contact">
+            <div class="container">
+                <h2 class="section-title">Contact</h2>
+                <div class="contact-grid">
+                    <form class="contact-form glass code-block" id="contactForm" aria-label="Contact form" action="https://api.web3forms.com/submit" method="POST">
+                        <input type="hidden" name="access_key" value="2c257d38-0f02-4c77-9da2-98bb9502ba80">
+                        <input type="hidden" name="subject" value="Portfolio contact">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required autocomplete="name" placeholder="Your name">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required autocomplete="email" placeholder="Your email">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" required rows="4" placeholder="Your message"></textarea>
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                    <div class="contact-info">
+                        <p><a href="mailto:shrestharishabh8@gmail.com">shrestharishabh8@gmail.com</a></p>
+                        <p><a href="tel:+9779861168088">+977 9861168088</a></p>
+                        <p>Bugal Marg 15th, Lalitpur</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <p class="footer-text">&copy; 2026 Rishabh Shrestha. All rights reserved.</p>
-                <div class="footer-links">
-                    <a href="https://linkedin.com/in/rishabh-shrestha" target="_blank" rel="noopener noreferrer" class="footer-link" aria-label="LinkedIn">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                        </svg>
-                    </a>
-                </div>
-                <p class="footer-built">Built with HTML, CSS & JavaScript</p>
-            </div>
+            <p class="footer-code">&copy; <span id="year"></span> Rishabh Shrestha</p>
         </div>
     </footer>
 
